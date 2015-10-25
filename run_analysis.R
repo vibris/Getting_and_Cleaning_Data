@@ -15,7 +15,7 @@ train <- cbind(train, trainId)
 test <- cbind(test, testActivity)
 test <- cbind(test, testId)
 
-# Merges the training and the test sets to create one data set.
+# Merges the training and the test sets to create one data set
 print("Merging sets...")
 join <- rbind(train, test)
 
@@ -33,5 +33,9 @@ join$"Activity" <- as.factor(activity$V2[join$"Activity"])
 print("Extracting mean and std data...")
 features2 <- c(grep(pattern = "mean\\(", features$V2, value = TRUE),grep(pattern = "std\\(", features$V2, value = TRUE), "Activity", "SubjectId")
 join2 <- join[,features2]
+
+# From the data set in prev step, creates a second, independent tidy data set with the average of each variable for each activity and each subject
+join3 <- group_by(join2, Activity, SubjectId)%>% summarise_each(funs(mean))
+write.table(join3, file="out.txt", row.name=FALSE)
 
 print("Successfully ended!")
